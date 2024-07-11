@@ -34,6 +34,10 @@ another way to run SQL code is to pass the file with the statements to `mysql` c
 ```sh
 mysql -uroot -p  [DB_NAME] < db_dump.sql
 ```
+```sh
+# OR THIS
+cat db_dump.sql | mysql -uroot -p  [DB_NAME]
+```
 
 ## DDL with MySQL
 DDL means Data Definition Language and it is the set of SQL statements that deals with manipulating data definitions or metadata like creating, dropping, altering, or renaming databases and tables.
@@ -51,12 +55,61 @@ CREATE TABLE IF NOT EXISTS awesome_db.users (
   --col_name    data_type       other_characteristics
     id          INT             NOT NULL AUTO_INCREMENT PRIMARY KEY,
     email       VARCHAR(255)    NOT NULL UNIQUE,
-    name        VARCHAR(255)
+    name        VARCHAR(255),
+    gender      ENUM('M', 'F')  NOT NULL        -- NOT NULL makes the default 'M' (the first value)
 );
 ```
 
 
+## DRL/DQL with MySQL
+Data Retrieval/Query Language is the subset of commands helps to GET data from the database in many forms, and we will do all of that with the SELECT command
 
+```sql
+-- List all columns from the users table without any filtering (all rows also)
+SELECT * FROM users;
+
+-- List (all origins of metal bands) and (total number of fans for bands in that origin)
+-- Sort/oreder the result by the number of fans descending
+SELECT origin, SUM(fans) as nb_fans
+  FROM metal_bands
+ GROUP BY origin
+ ORDER BY nb_fans DESC;
+
+-- List brand_name and lifespan of all brands with Glam rock as one of thier styles,
+-- sort the results with lifespan from heighest to lowest (descending)
+-- NOTE: if the band is split then the lifespan = split year - formation year
+--                                else lifespan = 2022 - formation year
+SELECT band_name, IF(split, split - formed, 2022 - formed) as lifespan
+  FROM metal_bands
+ WHERE style LIKE '%Glam rock%'
+ ORDER BY lifespan DESC;
+```
+
+
+## Triggers in MySQL
+Back to DDL, triggers helps to automatically change some data in a a table based on changes in another table, they are user specified actions that fire when a specific change (INSERT, UPDATE, DELETE) happens to the data.
+
+
+    Updating multiple tables for one action from your application can generate issue: network disconnection, crash, etc… to keep your data in a good shape, let MySQL do it for you!
+    - Holberton wiseman
+
+
+```sql
+-- automatically decrease the quantity (UPDATE) of an item after (AFTER) adding (INSERT) a new order
+
+CREATE TRIGGER
+    IF NOT EXISTS
+       decrease_quantity_after_new_order
+ AFTER INSERT
+    ON orders
+   FOR EACH ROW
+
+   UPDATE items
+      SET quantity = quantity - NEW.number
+    WHERE name = NEW.item_name;
+```
+
+Now this is part of the orders table
 
 ## Links
 [What are DDL DML...](https://stackoverflow.com/questions/2578194/what-are-ddl-and-dml#2578207)
