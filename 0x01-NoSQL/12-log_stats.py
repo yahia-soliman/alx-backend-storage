@@ -6,12 +6,12 @@ if __name__ == "__main__":
 
     methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
     client = MongoClient()
-    collection = client.logs.nginx
+    coll = client.logs.nginx
 
-    logs_count = collection.count_documents({})
-    status_check = collection.count_documents({"method": "GET", "path": "/status"})
-    result = collection.aggregate([
-        { "$group": {"_id": "$method", "c": {"$count": {}}} },
+    logs_count = coll.count_documents({})
+    status_check = coll.count_documents({"method": "GET", "path": "/status"})
+    result = coll.aggregate([
+        {"$group": {"_id": "$method", "c": {"$count": {}}}},
     ])
     method_count = {doc["_id"]: doc["c"] for doc in result}
 
