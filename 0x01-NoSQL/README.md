@@ -35,17 +35,17 @@ to create a database:
 ```mongosh
 use dbName;
 ```
-This will create the data base but if we didn't add anything to that database it will not be there after closing the `mongosh`, we need to create at least a collection
+This will create the data base and all the follwing operations will be inside that database. But if we didn't add anything to that database it will not be there after closing the `mongosh`, we need to create at least a collection
 
 
-Create a document:
+#### Create a document:
 ```js
 db.school.insertOne({ name: "Holberton School" });
 ```
 Dont worry I know we didn't create a `school` collection but this command will create the collection if it does not exists.
 
 
-Retrieve documents:
+#### Read documents:
 ```js
 // find all documens
 db.school.find()
@@ -55,7 +55,7 @@ db.school.find({ name: 'Holberton school' });
 ```
 
 
-Update documents:
+#### Update documents:
 ```js
 db.collection.updateMany({ /* matchers */ }, {
     $set: { key: 'value' },
@@ -65,7 +65,7 @@ db.collection.updateMany({ /* matchers */ }, {
 ```
 
 
-Delete documents:
+#### Delete documents:
 ```js
 db.collection.deleteMany({ /* matchers */ })
 db.collection.deleteOne({ /* matchers */ })
@@ -76,3 +76,59 @@ this is all the CRUD with mongosh
 
 ## Resources to learn more
 [CRUD Operations - MongoDB Manual](https://www.mongodb.com/docs/manual/crud/#std-label-crud)
+
+
+# PyMongo
+To integrate with Mongo in your application, you need an ODM (Object Document Mapper).  
+[Pymongo](https://www.mongodb.com/docs/languages/python/pymongo-driver/current/) provides a synchronous API for working with MongoDB databases.  
+for an asynchronous API look at [Motor](https://www.mongodb.com/docs/drivers/motor/)  
+
+```sh
+pip install pymongo
+```
+
+
+### Lets do the CRUD operations with PyMongo:
+
+First we need access to the database
+```py
+from pymongo import MongoClient
+
+client = MongoClient("mongodb://localhost:27017")
+
+db = client.my_awesome_db
+```
+
+#### Create a document
+```python
+school_collection = db.school
+
+result = school_collection.insert_one({ "name": "Holberton" })
+print(result.inserted_id)
+```
+
+#### Read documents
+```python
+# get all schools
+schools = db.school.find()
+
+for school in schools:
+    # school is a dict
+    print(school.get("name"))
+```
+
+#### Update documents
+```python
+result = db.school.update_many({'name': 'Holberton'}, {'$inc': {'courses': 3}})
+print(result.matched_count)
+print(result.modified_count)
+```
+
+#### Delete documents
+```python
+result = db.school.delete_many({"name": {"$exists": False}})
+print(result.deleted_count)
+```
+
+## Resource to learn more about PyMongo
+[API Documentation - PyMongo 4.8](https://pymongo.readthedocs.io/en/4.8.0/api/)
