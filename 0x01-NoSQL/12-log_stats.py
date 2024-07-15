@@ -11,7 +11,7 @@ if __name__ == "__main__":
     logs_count = coll.count_documents({})
     status_check = coll.count_documents({"method": "GET", "path": "/status"})
     result = coll.aggregate([
-        {"$group": {"_id": "$method", "c": {"$count": {}}}},
+        {"$group": {"_id": "$method", "c": {"$sum": 1}}},
     ])
     method_count = {doc["_id"]: doc["c"] for doc in result}
 
