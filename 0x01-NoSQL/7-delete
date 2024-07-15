@@ -1,0 +1,2 @@
+// add more attributes to holberton
+db.school.deleteMany({ name: 'Holberton school' });
