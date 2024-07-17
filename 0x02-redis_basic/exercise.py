@@ -39,7 +39,7 @@ def replay(method: t.Callable):
     r = redis.Redis()
     ins = r.lrange(method.__qualname__ + ":inputs", 0, -1)
     outs = r.lrange(method.__qualname__ + ":outputs", 0, -1)
-    print(f"{method.__qualname__} was called {len(ins)}")
+    print(f"{method.__qualname__} was called {len(ins)} times:")
     for args, result in zip(ins, outs):
         print(f"{method.__qualname__}({args}) -> {result}")
 
