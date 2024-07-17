@@ -41,7 +41,7 @@ def replay(method: t.Callable):
     outs = r.lrange(method.__qualname__ + ":outputs", 0, -1)
     print(f"{method.__qualname__} was called {len(ins)} times:")
     for args, result in zip(ins, outs):
-        print(f"{method.__qualname__}({args}) -> {result}")
+        print(f"{method.__qualname__}(*{args.decode()}) -> {result.decode()}")
 
 
 class Cache:
