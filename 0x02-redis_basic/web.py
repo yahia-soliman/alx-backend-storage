@@ -17,4 +17,5 @@ def get_page(url: str) -> str:
         r.set(url, html, ex=10)
 
     r.incr(f"count:{url}")
+    r.expire(f"count:{url}", 10)
     return html
