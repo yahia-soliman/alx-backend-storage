@@ -65,7 +65,9 @@ class Cache:
         return fn(res) if fn else res
 
     def get_str(self, key: str):
+        """Get the str value of specific key from the cache"""
         return self.get(key, str)
 
     def get_int(self, key: str):
+        """Get the int value of specific key from the cache"""
         return self.get(key, int)
