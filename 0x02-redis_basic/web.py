@@ -14,8 +14,9 @@ def get_page(url: str) -> str:
     else:
         res = requests.get(url)
         html = res.text
-        r.set(url, html, ex=10)
+        r.set(url, html)
 
     r.incr(f"count:{url}")
     r.expire(f"count:{url}", 10)
+    r.expire(url, 10)
     return html
